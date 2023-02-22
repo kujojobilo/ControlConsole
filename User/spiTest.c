@@ -38,10 +38,8 @@ u8 mac[6]={0x00,0x08,0xdc,0x01,0x02,0x03};//定义mac地址
 u8 lip[4]={192,168,10,100};//定义IP
 u8 subnet[4]={255,255,255,0};//定义子网掩码
 u8 gateway[4]={192,168,10,1};//定义网关
-u8 txsize[] = {128,128,128,128,128,128,128,128};//8个socket缓冲区大小设置
-u8 rxsize[] = {128,128,128,128,128,128,128,128};
-int index = 0;
-u8 buf[64]={0};
+u8 txsize[] = {2,2,2,2,2,2,2,0};//8个socket缓冲区大小设置
+u8 rxsize[] = {2,2,2,2,2,2,2,0};
 /* Private functions ---------------------------------------------------------*/
 
 
@@ -95,9 +93,7 @@ void w5500_init(){//对w5500做初始化设置
 
 
 
-void assert_failed(uint8_t* file, uint32_t line){
-	printf("error");
-}//无意义，不加会报错
+void assert_failed(uint8_t* file, uint32_t line){}//无意义，不加会报错
 
 
 
@@ -108,7 +104,7 @@ __interrupt void TIM4_UPD_OVF_IRQHandler(){
   TIM4_ClearITPendingBit(TIM4_IT_UPDATE);
 }
            
-
+u8 data[6] = {0};
 
 /* Main functions ---------------------------------------------------------*/
 int main( void )
@@ -117,12 +113,15 @@ int main( void )
   CLK_Init();
   delay(50);
   watchDog();
-  //GPIO_WriteHigh(GPIOD,GPIO_PIN_7);
-  rim();
-  delay(50);
-  w5500_init();
-  delay(50);
-  
-  while(1);
+  rim(); 
+  GPIO_Init(GPIOE,GPIO_PIN_5,GPIO_MODE_OUT_PP_HIGH_SLOW);
+  SPI_Setup();
+  while(1){
+    delay(20000);
+    setSHAR(mac);
+    delay(100);
+    getSHAR(data);
+    delay(100);
+  }
 }
 /******************************************END OF FILE****/

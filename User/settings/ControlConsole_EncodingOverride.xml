@@ -4,4 +4,8 @@
         <path>D:\File\IRAProject\一体式操控台_IAR\User\i2c_sim.h</path>
         <encoding>System</encoding>
     </override>
+    <override>
+        <path>D:\File\IRAProject\一体式操控台_IAR\User\main.c</path>
+        <encoding>GB2312</encoding>
+    </override>
 </userOverrides>

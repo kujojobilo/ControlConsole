@@ -29,6 +29,15 @@
 #define W5500_CSN_PORT GPIOE
 #define W5500_CSN_PIN GPIO_PIN_5
 
+#define BSB_Regular_Write 0x04 //通用寄存器的写模式
+#define BSB_Regular_Read 0x00 // 通用寄存器的读模式
+#define BSB_Socket_Write(ch) (0x0A+(ch<<5))            // Socket(ch) 寄存器写模式
+#define BSB_Socket_Read(ch) (0x06+(ch<<5))            // Socket(ch) 寄存器读模式
+#define BSB_Socket_Send_Write(ch) (0x14+(ch<<5))            //Socket(ch) 发送缓存写模式
+#define BSB_Socket_Send_Read(ch) (0x10+(ch<<5))           // Socket(ch) 发送缓存读模式
+#define BSB_Socket_Rcv_Write(ch) (0x1C+(ch<<5))              // Socket(ch) 接收缓存写模式
+#define BSB_Socket_Rcv_Read(ch) (0x18+(ch<<5))             // Socket(ch) 接收缓存读模式
+
 void w5500_GPIOInit();//与w5500相关的引脚初始化
 void w5500_CSON();
 void w5500_CSOFF();
@@ -39,225 +48,224 @@ void w5500_CSOFF();
 ********************************以下为官网例程的内容****************************
 */
 
-#define MR                          (0x000000)
+#define MR                          (0x0000)
 
 /**
  @brief Gateway IP Register address
  */
-#define GAR0                        (0x000100)
-#define GAR1                        (0x000200)
-#define GAR2                        (0x000300)
-#define GAR3                        (0x000400)
+#define GAR0                        (0x0001)
+#define GAR1                        (0x0002)
+#define GAR2                        (0x0003)
+#define GAR3                        (0x0004)
 /**
  @brief Subnet mask Register address
  */
-#define SUBR0                       (0x000500)
-#define SUBR1                       (0x000600)
-#define SUBR2                       (0x000700)
-#define SUBR3                       (0x000800)
+#define SUBR0                       (0x0005)
+#define SUBR1                       (0x0006)
+#define SUBR2                       (0x0007)
+#define SUBR3                       (0x0008)
 
 /**
  @brief Source MAC Register address
  */
-#define SHAR0                       (0x000900)
-#define SHAR1                       (0x000A00)
-#define SHAR2                       (0x000B00)
-#define SHAR3                       (0x000C00)
-#define SHAR4                       (0x000D00)
-#define SHAR5                       (0x000E00)
+#define SHAR0                       (0x0009)
+#define SHAR1                       (0x000A)
+#define SHAR2                       (0x000B)
+#define SHAR3                       (0x000C)
+#define SHAR4                       (0x000D)
+#define SHAR5                       (0x000E)
 /**
  @brief Source IP Register address
  */
-#define SIPR0                       (0x000F00)
-#define SIPR1                       (0x001000)
-#define SIPR2                       (0x001100)
-#define SIPR3                       (0x001200)
+#define SIPR0                       (0x000F)
+#define SIPR1                       (0x0010)
+#define SIPR2                       (0x0011)
+#define SIPR3                       (0x0012)
 /**
  @brief set Interrupt low level timer register address
  */
-#define INTLEVEL0                   (0x001300)
-#define INTLEVEL1                   (0x001400)
+#define INTLEVEL0                   (0x0013)
+#define INTLEVEL1                   (0x0014)
 /**
  @brief Interrupt Register
  */
-#define IR                          (0x001500)
+#define IR                          (0x0015)
 /**
  @brief Interrupt mask register
  */
-#define IMR                         (0x001600)
+#define IMR                         (0x0016)
 /**
  @brief Socket Interrupt Register
  */
-#define SIR                         (0x001700) 
+#define SIR                         (0x0017) 
 /**
  @brief Socket Interrupt Mask Register
  */
-#define SIMR                        (0x001800)
+#define SIMR                        (0x0018)
 /**
  @brief Timeout register address( 1 is 100us )
  */
-#define RTR0                        (0x001900)
-#define RTR1                        (0x001A00)
+#define RTR0                        (0x0019)
+#define RTR1                        (0x001A)
 /**
  @brief Retry count reigster
  */
-#define WIZ_RCR                         (0x001B00)
+#define WIZ_RCR                         (0x001B)
 /**
  @briefPPP LCP Request Timer register  in PPPoE mode
  */
-#define PTIMER                      (0x001C00)
+#define PTIMER                      (0x001C)
 /**
  @brief PPP LCP Magic number register  in PPPoE mode
  */
-#define PMAGIC                      (0x001D00)
+#define PMAGIC                      (0x001D)
 /**
  @brief PPP Destination MAC Register address
  */
-#define PDHAR0                      (0x001E00)
-#define PDHAR1                      (0x001F00)
-#define PDHAR2                      (0x002000)
-#define PDHAR3                      (0x002100)
-#define PDHAR4                      (0x002200)
-#define PDHAR5                      (0x002300)
+#define PDHAR0                      (0x001E)
+#define PDHAR1                      (0x001F)
+#define PDHAR2                      (0x0020)
+#define PDHAR3                      (0x0021)
+#define PDHAR4                      (0x0022)
+#define PDHAR5                      (0x0023)
 /**
  @brief PPP Session Identification Register
  */
-#define PSID0                       (0x002400)
-#define PSID1                       (0x002500)
+#define PSID0                       (0x0024)
+#define PSID1                       (0x0025)
 /**
  @brief PPP Maximum Segment Size(MSS) register
  */
-#define PMR0                        (0x002600)
-#define PMR1                        (0x002700)
+#define PMR0                        (0x0026)
+#define PMR1                        (0x0027)
 /**
  @brief Unreachable IP register address in UDP mode
  */
-#define UIPR0                       (0x002800)
-#define UIPR1                       (0x002900)
-#define UIPR2                       (0x002A00)
-#define UIPR3                       (0x002B00)
+#define UIPR0                       (0x0028)
+#define UIPR1                       (0x0029)
+#define UIPR2                       (0x002A)
+#define UIPR3                       (0x002B)
 /**
  @brief Unreachable Port register address in UDP mode
  */
-#define UPORT0                      (0x002C00)
-#define UPORT1                      (0x002D00)
+#define UPORT0                      (0x002C)
+#define UPORT1                      (0x002D)
 /**
  @brief PHY Configuration Register
  */
-#define PHYCFGR                      (0x002E00)
+#define PHYCFGR                      (0x002E)
 /**
  @brief chip version register address
  */
-#define VERSIONR                    (0x003900)   
+#define VERSIONR                    (0x0039)   
 
-
-
+////////////////////////////////////////////////////////////////////////TODO
 /**
  @brief socket Mode register
  */
-#define Sn_MR(ch)                       (0x000008 + (ch<<5))
+#define Sn_MR                     (0x0000)
 
 /**
  @brief channel Sn_CR register
  */
-#define Sn_CR(ch)                       (0x000108 + (ch<<5))
+#define Sn_CR                       (0x0001)
 /**
  @brief channel interrupt register
  */
-#define Sn_IR(ch)                       (0x000208 + (ch<<5))
+#define Sn_IR                       (0x0002)
 /**
  @brief channel status register
  */
-#define Sn_SR(ch)                       (0x000308 + (ch<<5))
+#define Sn_SR                       (0x0003)
 /**
  @brief source port register
  */
-#define Sn_PORT0(ch)                    (0x000408 + (ch<<5))
-#define Sn_PORT1(ch)                    (0x000508 + (ch<<5))
+#define Sn_PORT0                    (0x0004)
+#define Sn_PORT1                    (0x0005)
 /**
  @brief Peer MAC register address
  */
-#define Sn_DHAR0(ch)                    (0x000608 + (ch<<5))
-#define Sn_DHAR1(ch)                    (0x000708 + (ch<<5))
-#define Sn_DHAR2(ch)                    (0x000808 + (ch<<5))
-#define Sn_DHAR3(ch)                    (0x000908 + (ch<<5))
-#define Sn_DHAR4(ch)                    (0x000A08 + (ch<<5))
-#define Sn_DHAR5(ch)                    (0x000B08 + (ch<<5))
+#define Sn_DHAR0                    (0x0006)
+#define Sn_DHAR1                    (0x0007)
+#define Sn_DHAR2                 (0x0008)
+#define Sn_DHAR3                   (0x0009)
+#define Sn_DHAR4                    (0x000A)
+#define Sn_DHAR5                    (0x000B)
 /**
  @brief Peer IP register address
  */
-#define Sn_DIPR0(ch)                    (0x000C08 + (ch<<5))
-#define Sn_DIPR1(ch)                    (0x000D08 + (ch<<5))
-#define Sn_DIPR2(ch)                    (0x000E08 + (ch<<5))
-#define Sn_DIPR3(ch)                    (0x000F08 + (ch<<5))
+#define Sn_DIPR0                    (0x000C)
+#define Sn_DIPR1                    (0x000D)
+#define Sn_DIPR2                    (0x000E)
+#define Sn_DIPR3                    (0x000F)
 /**
  @brief Peer port register address
  */
-#define Sn_DPORT0(ch)                   (0x001008 + (ch<<5))
-#define Sn_DPORT1(ch)                   (0x001108 + (ch<<5))
+#define Sn_DPORT0                   (0x0010)
+#define Sn_DPORT1                   (0x0011)
 /**
  @brief Maximum Segment Size(Sn_MSSR0) register address
  */
-#define Sn_MSSR0(ch)                    (0x001208 + (ch<<5))
-#define Sn_MSSR1(ch)                    (0x001308 + (ch<<5))
+#define Sn_MSSR0                    (0x0012)
+#define Sn_MSSR1                    (0x0013)
 /** 
  @brief IP Type of Service(TOS) Register 
  */
-#define Sn_TOS(ch)                      (0x001508 + (ch<<5))
+#define Sn_TOS                      (0x0015)
 /**
  @brief IP Time to live(TTL) Register 
  */
-#define Sn_TTL(ch)                      (0x001608 + (ch<<5))
+#define Sn_TTL                      (0x0016)
 /**
  @brief Receive memory size reigster
  */
-#define Sn_RXMEM_SIZE(ch)               (0x001E08 + (ch<<5))
+#define Sn_RXMEM_SIZE               (0x001E)
 /**
  @brief Transmit memory size reigster
  */
-#define Sn_TXMEM_SIZE(ch)               (0x001F08 + (ch<<5))
+#define Sn_TXMEM_SIZE               (0x001F)
 /**
  @brief Transmit free memory size register
  */
-#define Sn_TX_FSR0(ch)                  (0x002008 + (ch<<5))
-#define Sn_TX_FSR1(ch)                  (0x002108 + (ch<<5))
+#define Sn_TX_FSR0                  (0x0020)
+#define Sn_TX_FSR1                  (0x0021)
 /**
  @brief Transmit memory read pointer register address
  */
-#define Sn_TX_RD0(ch)                   (0x002208 + (ch<<5))
-#define Sn_TX_RD1(ch)                   (0x002308 + (ch<<5))
+#define Sn_TX_RD0                   (0x0022)
+#define Sn_TX_RD1                  (0x0023)
 /**
  @brief Transmit memory write pointer register address
  */
-#define Sn_TX_WR0(ch)                   (0x002408 + (ch<<5))
-#define Sn_TX_WR1(ch)                   (0x002508 + (ch<<5))
+#define Sn_TX_WR0                   (0x0024)
+#define Sn_TX_WR1                   (0x0025)
 /**
  @brief Received data size register
  */
-#define Sn_RX_RSR0(ch)                  (0x002608 + (ch<<5))
-#define Sn_RX_RSR1(ch)                  (0x002708 + (ch<<5))
+#define Sn_RX_RSR0                  (0x0026)
+#define Sn_RX_RSR1                  (0x0027)
 /**
  @brief Read point of Receive memory
  */
-#define Sn_RX_RD0(ch)                   (0x002808 + (ch<<5))
-#define Sn_RX_RD1(ch)                   (0x002908 + (ch<<5))
+#define Sn_RX_RD0                   (0x0028)
+#define Sn_RX_RD1                   (0x0029)
 /**
  @brief Write point of Receive memory
  */
-#define Sn_RX_WR0(ch)                   (0x002A08 + (ch<<5))
-#define Sn_RX_WR1(ch)                   (0x002B08 + (ch<<5))
+#define Sn_RX_WR0                   (0x002A)
+#define Sn_RX_WR1                   (0x002B)
 /**
  @brief socket interrupt mask register
  */
-#define Sn_IMR(ch)                      (0x002C08 + (ch<<5))
+#define Sn_IMR                      (0x002C)
 /**
  @brief frag field value in IP header register
  */
-#define Sn_FRAG(ch)                     (0x002D08 + (ch<<5))
+#define Sn_FRAG                     (0x002D)
 /**
  @brief Keep Timer register
  */
-#define Sn_KPALVTR(ch)                  (0x002F08 + (ch<<5))
+#define Sn_KPALVTR                  (0x002F)
 
 /* MODE register values */
 #define MR_RST                       0x80 /**< reset */
@@ -357,10 +365,10 @@ void w5500_CSOFF();
 #define	MAX_SOCK_NUM	8
 typedef  uint8_t SOCKET;
 
-void IINCHIP_WRITE( uint32_t addrbsb,  uint8_t data);
-uint8_t IINCHIP_READ(uint32_t addrbsb);
-uint16_t wiz_write_buf(uint32_t addrbsb,uint8_t* buf,uint16_t len);
-uint16_t wiz_read_buf(uint32_t addrbsb, uint8_t* buf,uint16_t len);
+void IINCHIP_WRITE( uint16_t addr, uint8_t bsb,  uint8_t data);
+uint8_t IINCHIP_READ(uint16_t addr, uint8_t bsb);
+uint16_t wiz_write_buf(uint16_t addr,uint8_t bsb,uint8_t* buf,uint16_t len);
+uint16_t wiz_read_buf(uint16_t addr,uint8_t bsb, uint8_t* buf,uint16_t len);
 void sysinit(uint8_t * tx_size, uint8_t * rx_size); // setting tx/rx buf size
 uint8_t getISR(uint8_t s);
 void putISR(uint8_t s, uint8_t val);
@@ -374,12 +382,12 @@ uint8_t getIR( void );
 void setSn_MSS(SOCKET s, uint16_t Sn_MSSR); // set maximum segment size
 uint8_t getSn_IR(SOCKET s); // get socket interrupt status
 uint8_t getSn_SR(SOCKET s); // get socket status
-uint16_t getSn_TX_FSR(SOCKET s); // get socket TX free buf size
-uint16_t getSn_RX_RSR(SOCKET s); // get socket RX recv buf size
+//uint16_t getSn_TX_FSR(SOCKET s); // get socket TX free buf size
+//uint16_t getSn_RX_RSR(SOCKET s); // get socket RX recv buf size
 uint8_t getSn_SR(SOCKET s);
 void setSn_TTL(SOCKET s, uint8_t ttl);
-void send_data_processing(SOCKET s, uint8_t *wizdata, uint16_t len);
-void recv_data_processing(SOCKET s, uint8_t *wizdata, uint16_t len);
+//void send_data_processing(SOCKET s, uint8_t *wizdata, uint16_t len);
+//void recv_data_processing(SOCKET s, uint8_t *wizdata, uint16_t len);
 
 void setGAR(uint8_t * addr); // set gateway address
 void setSUBR(uint8_t * addr); // set subnet mask address

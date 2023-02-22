@@ -30,6 +30,7 @@
 void watchDog();//配置看门狗CLK输出
 void CLK_Init();//时钟切换初始化
 void delay(int k);
+void delayMs(int k);
 void w5500_Reset();//重启w5500
 void w5500_init();
 
@@ -38,10 +39,15 @@ u8 mac[6]={0x00,0x08,0xdc,0x01,0x02,0x03};//定义mac地址
 u8 lip[4]={192,168,10,100};//定义IP
 u8 subnet[4]={255,255,255,0};//定义子网掩码
 u8 gateway[4]={192,168,10,1};//定义网关
-u8 txsize[] = {128,128,128,128,128,128,128,128};//8个socket缓冲区大小设置
-u8 rxsize[] = {128,128,128,128,128,128,128,128};
-int index = 0;
-u8 buf[64]={0};
+u8 txsize[] = {2,2,2,2,2,2,2,0};//8个socket缓冲区大小设置
+u8 rxsize[] = {2,2,2,2,2,2,2,0};
+//u8 mac_read[6]={0};
+//u8 lip_read[4]={0};
+//u8 subnet_read[4]={0};
+//u8 gateway_read[4]={0};
+u8 RTR_read1 = 0;
+u8 RTR_read2 = 0;
+u8 RCR_read = 0;
 /* Private functions ---------------------------------------------------------*/
 
 
@@ -73,6 +79,13 @@ void delay(int k){
   while(k--);
 }
 
+void delayMs(int k){
+  while(k--){
+  	int i = 1000;
+	while(i--);
+  }
+}
+
 void w5500_Reset(){//重启w5500,RST低电平有效
   GPIO_WriteLow(W5500_RST_PORT,W5500_RST_PIN);
   delay(10);
@@ -84,18 +97,28 @@ void w5500_init(){//对w5500做初始化设置
   w5500_GPIOInit();//相关GPIO初始化
   w5500_Reset();
   SPI_Setup();//SPI相关设置
+  delayMs(8000);//官方例程此处延迟了1600ms
   setSHAR(mac);//设置MAC地址
+  delay(100);
   setSUBR(subnet);//设置子网掩码
+  delay(100);
   setGAR(gateway);//设置网关
+  delay(100);
   setSIPR(lip); //设置IP
+  delay(100);
   sysinit(txsize,rxsize);//初始化8个socket的收发缓冲区
+  delay(100);
   setRTR(2000); //发送超时为2000
+  delay(100);
   setRCR(3);//超时重传3次
+  delay(100);
 }
 
 
 
-void assert_failed(uint8_t* file, uint32_t line){}//无意义，不加会报错
+void assert_failed(uint8_t* file, uint32_t line){
+	printf("error");
+}//无意义，不加会报错
 
 
 
@@ -107,7 +130,6 @@ __interrupt void TIM4_UPD_OVF_IRQHandler(){
 }
            
 
-
 /* Main functions ---------------------------------------------------------*/
 int main( void )
 {
@@ -115,12 +137,18 @@ int main( void )
   CLK_Init();
   delay(50);
   watchDog();
-  rim(); 
-  SPI_Setup();
-  while(1){
-    delay(20000);
-    while( !((SPI->SR & 0x02)>>1));
-    setSHAR(mac);
-  }
+  rim();
+  delay(50);
+  w5500_init();
+  delay(50);
+  delayMs(4);
+  //getSHAR(mac_read);
+  //getSUBR(subnet_read);
+  //getSIPR(lip_read);
+  //getGAR(gateway_read);
+  RTR_read1 = IINCHIP_READ(RTR0, BSB_Regular_Read);
+  RTR_read2 = IINCHIP_READ(RTR1, BSB_Regular_Read);
+  RCR_read = IINCHIP_READ(WIZ_RCR, BSB_Regular_Read);
+  while(1);
 }
 /******************************************END OF FILE****/

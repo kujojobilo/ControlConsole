@@ -15,16 +15,16 @@ void SPI_Setup(){//设置基本参数
   SPI_DeInit();
   GPIO_Init(SPI_CLK_PORT,SPI_CLK_PIN,GPIO_MODE_OUT_PP_HIGH_FAST);
   GPIO_Init(SPI_MOSI_PORT,SPI_MOSI_PIN,GPIO_MODE_OUT_PP_HIGH_FAST);//设置SPI_SCK，SPI_MOSI为快速推挽输出
-  GPIO_Init(SPI_MISO_PORT,SPI_MISO_PIN,GPIO_MODE_IN_PU_IT);//设置SPI_MISO为上拉带中断输入
+  GPIO_Init(SPI_MISO_PORT,SPI_MISO_PIN,GPIO_MODE_IN_PU_NO_IT);//设置SPI_MISO为上拉带中断输入
   SPI_Init(SPI_FIRSTBIT_MSB, //首位在前
               SPI_BAUDRATEPRESCALER_16, //主频的16分频，即1Mhz
               SPI_MODE_MASTER, //单片机为主设备
-              SPI_CLOCKPOLARITY_LOW, //SPI时钟线闲时为0
-              SPI_CLOCKPHASE_1EDGE, //第一个时钟沿有效
+              SPI_CLOCKPOLARITY_LOW, //SPI时钟线闲时为1
+              SPI_CLOCKPHASE_1EDGE, //第2个时钟沿有效
               SPI_DATADIRECTION_2LINES_FULLDUPLEX,//双线单向模式 
-              SPI_NSS_HARD,//硬件控制丛机
-              0x70);//CRCPR寄存器，不开启CRC校验，设置为默认值0x70
-  SPI_ITConfig(SPI_IT_RXNE, ENABLE);//使能接收中断
+              SPI_NSS_SOFT,//软件控制丛机，NSS口为普通GPIO口
+              0x07);//CRCPR寄存器，不开启CRC校验，设置为默认值0x00
+  //SPI_ITConfig(SPI_IT_RXNE, DISABLE);//关闭中断
   SPI_Cmd(ENABLE);
 }
 
